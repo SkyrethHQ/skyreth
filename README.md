@@ -1,5 +1,4 @@
-<a style="text:center"># Skyreth Panel</a>
-
+<h1 style:"text-align:center;">Skyreth Panel</h1>
 The modern client panel for Pterodactyl.
 
 Skyreth sits on top of Pterodactyl. Ptero runs the servers. Skyreth runs the clients, the coins, the store, and the payments — Stripe, Tebex, and other gateways.
