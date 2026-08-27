@@ -4,8 +4,6 @@ The modern client panel for Pterodactyl.
 Skyreth sits on top of Pterodactyl. Ptero runs the servers. Skyreth runs the clients, the coins, the store, and the payments — Stripe, Tebex, and other gateways.
 
 Website: skyreth.com
-App login: panel.skyreth.com
-Product page: skyreth.com/panel
 
 --------------------------------------------------
 What it does
@@ -39,7 +37,7 @@ Install
 
 You need Pterodactyl already running.
 
-Option A — Pterodactyl egg (Node)
+Option A — Pterodactyl Server
 
 1. Upload the panel files to a Pterodactyl Node.js server.
    Generic Node egg: https://github.com/parkervcp/eggs/blob/master/generic/nodejs/egg-node-js-generic.json
@@ -48,36 +46,38 @@ Option A — Pterodactyl egg (Node)
 Option B — Direct on a VPS
 
 1. Node
-
+```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-
+```
 Open a new SSH session, then:
-
+```
 nvm install 20
 node -v
-
+```
 Use the version listed in the Skyreth repo if it differs.
 
 2. Files
-
-git clone https://github.com/YOURUSER/skyreth.git /var/www/skyreth
-
+```
+git clone https://github.com/Skyreth/skyreth.git /var/www/skyreth
+```
 3. Build deps + modules
-
+```
 apt-get update && apt-get install libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev build-essential
 cd /var/www/skyreth && npm i
-
+```
 After settings.json is filled in:
 
+```
 node index.js
+```
 
 Background:
-
+```
 screen -S skyreth node index.js
-
-Detach: Ctrl + A + D
-Reattach: screen -R skyreth
-Stop: Ctrl + C
+```
+Detach: `Ctrl + A + D`
+Reattach: `screen -R skyreth`
+Stop: `Ctrl + C`
 
 --------------------------------------------------
 Web server
@@ -87,21 +87,21 @@ Web server
 2. Start Skyreth. Ignore the two weird boot warnings if they still show.
 3. Point DNS at the VPS (panel.yourdomain.com → VPS IP).
 4. On the VPS:
-
+```
 apt install nginx certbot
 ufw allow 80
 ufw allow 443
-certbot certonly -d panel.yourdomain.com
+certbot certonly -d dash.yourdomain.com
 nano /etc/nginx/sites-enabled/skyreth.conf
-
+```
 5. Paste the nginx block below. Swap domain, SSL paths, and the local Skyreth port.
 6. systemctl restart nginx and open the domain.
 
 Nginx:
-
+```
 server {
     listen 80;
-    server_name panel.yourdomain.com;
+    server_name dash.yourdomain.com;
     return 301 https://$server_name$request_uri;
 }
 
@@ -109,8 +109,8 @@ server {
     listen 443 ssl http2;
     server_name panel.yourdomain.com;
 
-    ssl_certificate /etc/letsencrypt/live/panel.yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/panel.yourdomain.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/dash.yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dash.yourdomain.com/privkey.pem;
     ssl_session_cache shared:SSL:10m;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
@@ -131,21 +131,21 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
-
+```
 --------------------------------------------------
-PM2 (run on boot, not inside Ptero)
+PM2 (run on root, not inside Ptero)
 --------------------------------------------------
-
+```
 npm install pm2 -g
 cd /var/www/skyreth
 pm2 start index.js --name "Skyreth"
 pm2 logs Skyreth
 pm2 startup
 pm2 save
-
-Stop: pm2 stop Skyreth
-Status: pm2 list
-Disable startup: pm2 unstartup
+```
+Stop: `pm2 stop Skyreth`
+Status: `pm2 list`
+Disable `startup: pm2 unstartup`
 
 --------------------------------------------------
 Payments
@@ -157,4 +157,4 @@ Wire these in settings.json:
 - Tebex — game-store packages, Minecraft-friendly
 - Other gateways you enable in config
 
-Pterodactyl still creates/deletes the actual server. Skyreth just takes the money and tells Ptero what to spin up.
+Skyreth Panel. Developed and Distributed by [Yanusake](https://github.com/Yanusake).
